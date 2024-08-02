@@ -1,0 +1,28 @@
+{
+  "name": "react-composable-api",
+  "version": "1.0.0",
+  "description": "react composable api",
+  "main": "dist/react-composable-api.js",
+  "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LapressaMerder/react-composable-api.git"
+  },
+  "keywords": [
+    "library",
+    "javascript",
+    "typescript"
+  ],
+  "author": {
+    "name": "Mikhail Timoshin",
+    "email": "m.timoshin88@gmail.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/LapressaMerder/react-composable-api/issues"
+  },
+  "homepage": "https://react-composable-api.com",
+  "dependencies": {
+    "react": "^16.8.6"
+  }
+}
