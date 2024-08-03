@@ -1,3 +1,9 @@
+/**
+ * React composable api
+ * (c) 2024 Leto (Mikhail)
+ * @license MIT
+ * @link https://react-composable.com
+ **/
 import { useState as y, useMemo as m, useRef as c, useEffect as s } from "react";
 function d(e) {
   const n = new CustomEvent(e.name, {
