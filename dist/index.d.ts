@@ -1,6 +1,7 @@
 type DeepRef<T> = {
-    [K in keyof T]: T[K] extends object ? DeepRef<T[K]> : Ref<T[K]>;
+    [K in keyof T]:  DeepRef<T[K]> extends object ? DeepRef<T[K]> : Ref<T[K]>;
 };
+
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type Ref<T> =  T extends string | number | boolean | symbol ? { value: T } : T extends [] ? T : T extends object ? T : T extends () => Function ? T : never;
 export type EventData<T> = { name: string, payload: T }
@@ -12,7 +13,7 @@ declare export function onMounted(callback: () => void):void
 declare export function onUpdate(callback: () => void):void
 declare export function onUnmount(callback: () => void):void
 declare export function onEvent<T>(name: string, callback: (e:T) => void):void
-declare export function ref<T>(state:T): DeepRef<T>
+declare export function ref<T>(state:T): DeepRef<T>;
 
 export default {
     ref,
