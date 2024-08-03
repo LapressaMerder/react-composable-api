@@ -4,14 +4,14 @@
  * @license MIT
  * @link https://react-composable.com
  **/
-import { useRef as a, useEffect as c, useState as d, useMemo as v } from "react";
+import { useRef as i, useEffect as a, useState as v, useMemo as m } from "react";
 /**
  * React composable api
  * (c) 2024 Leto (Mikhail)
  * @license MIT
  * @link https://react-composable.com
  **/
-function m(n) {
+function w(n) {
   const e = new CustomEvent(n.name, {
     detail: {
       payload: n.payload
@@ -23,52 +23,52 @@ function m(n) {
     dispatch: t
   };
 }
-function w(n, e) {
-  const t = typeof n, s = {
-    set(r, u, o) {
-      return u === "value" ? (r[u] = o, e(r.value), !0) : !1;
+function A(n, e) {
+  const t = typeof n, u = {
+    set(r, o, c) {
+      return o === "value" ? (r[o] = c, e(r.value), !0) : !1;
     }
-  }, i = {
-    set(r, u, o) {
-      return r[u] = o, e(Array.isArray(r) ? [...r] : { ...r }), !0;
+  }, f = {
+    set(r, o, c) {
+      return r[o] = c, e(Array.isArray(r) ? [...r] : { ...r }), !0;
     },
-    deleteProperty(r, u) {
-      return delete r[u], e(Array.isArray(r) ? [...r] : { ...r }), !0;
+    deleteProperty(r, o) {
+      return delete r[o], e(Array.isArray(r) ? [...r] : { ...r }), !0;
     }
-  }, p = {
-    apply(r, u, o) {
-      return r.apply(u, o);
+  }, d = {
+    apply(r, o, c) {
+      return r.apply(o, c);
     }
   };
   if (t === "string" || t === "boolean" || t === "symbol") {
     const r = { value: n };
-    return new Proxy(r, s);
+    return new Proxy(r, u);
   } else if (t === "number") {
     const r = { value: n };
     return new Proxy(r, {
-      ...s,
-      set(u, o, f) {
-        return o === "value" ? typeof f == "number" ? (u[o] = f, e(u.value), !0) : (console.warn("New value must be a number"), !1) : !1;
+      ...u,
+      set(o, c, l) {
+        return c === "value" ? typeof l == "number" ? (o[c] = l, e(o.value), !0) : (console.warn("New value must be a number"), !1) : !1;
       }
     });
   } else {
     if (Array.isArray(n))
-      return new Proxy(n, i);
+      return new Proxy(n, f);
     if (t === "object" && n !== null)
-      return new Proxy(n, i);
+      return new Proxy(n, f);
     if (t === "function")
-      return new Proxy(n, p);
+      return new Proxy(n, d);
     throw new Error("Unsupported data type");
   }
 }
-function b(n) {
-  const [e, t] = d(n);
-  return v(() => w(e, t), [e]);
+function E(n) {
+  const [e, t] = v(n);
+  return m(() => A(e, t), [e]);
 }
-function A(n, e) {
+function O(n, e) {
   Array.isArray(n) || (n = [n]);
-  const t = a(!1);
-  c(() => {
+  const t = i(!1);
+  a(() => {
     if (!t.current) {
       t.current = !0;
       return;
@@ -76,15 +76,15 @@ function A(n, e) {
     e();
   }, n);
 }
-function E(n) {
-  const e = a(!1);
-  c(() => {
+function P(n) {
+  const e = i(!1);
+  a(() => {
     e.current || (n(), e.current = !0);
   }, [n]);
 }
-function P(n) {
-  const e = a(!1), t = a(!1);
-  c(() => {
+function h(n) {
+  const e = i(!1), t = i(!1);
+  a(() => {
     if (!e.current) {
       e.current = !0;
       return;
@@ -92,49 +92,64 @@ function P(n) {
     t.current || (n(), t.current = !0);
   }, [n]);
 }
-function h(n) {
-  c(() => {
+function x(n) {
+  a(() => {
     n();
   });
 }
-function x(n) {
-  const e = a(!1);
-  c(() => () => {
+function M(n) {
+  const e = i(!1);
+  a(() => () => {
     e.current ? n() : e.current = !0;
   }, []);
 }
-function O(n, e) {
-  const t = (s) => e(s.detail.payload);
-  c(() => (document.addEventListener(n, t), () => {
+function U(n, e) {
+  const t = (u) => e(u.detail.payload);
+  a(() => (document.addEventListener(n, t), () => {
     document.removeEventListener(n, t);
   }), []);
 }
-function M(n) {
-  return l(n), b(n);
+function s(n) {
+  if (n === null || typeof n != "object")
+    return n;
+  if (Array.isArray(n)) {
+    const t = [];
+    for (let u = 0; u < n.length; u++)
+      t[u] = s(n[u]);
+    return t;
+  }
+  const e = {};
+  for (const t in n)
+    Object.prototype.hasOwnProperty.call(n, t) && (e[t] = s(n[t]));
+  return e;
 }
-function l(n) {
+function b(n) {
+  const e = s(n);
+  return y(e), E(e);
+}
+function y(n) {
   if (typeof n == "object" && n !== null)
     for (let e in n)
-      n.hasOwnProperty(e) && (typeof n[e] == "object" && n[e] !== null ? l(n[e]) : n[e] = y(n[e]));
+      Object.prototype.hasOwnProperty.call(n, e) && (typeof n[e] == "object" && n[e] !== null ? y(n[e]) : n[e] = p(n[e]));
 }
-const y = M, U = A, R = E, j = P, B = h, I = x, L = O, C = {
-  ref: y,
-  createEvent: m,
+const p = b, R = O, g = P, B = h, C = x, I = M, L = U, N = {
+  ref: p,
+  createEvent: w,
   onEvent: L,
-  watch: U,
-  onBeforeMount: R,
-  onMounted: j,
-  onUpdate: B,
+  watch: R,
+  onBeforeMount: g,
+  onMounted: B,
+  onUpdate: C,
   onUnmount: I
 };
 export {
-  m as createEvent,
-  C as default,
-  R as onBeforeMount,
+  w as createEvent,
+  N as default,
+  g as onBeforeMount,
   L as onEvent,
-  j as onMounted,
+  B as onMounted,
   I as onUnmount,
-  B as onUpdate,
-  y as ref,
-  U as watch
+  C as onUpdate,
+  p as ref,
+  R as watch
 };
