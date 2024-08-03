@@ -4,119 +4,137 @@
  * @license MIT
  * @link https://react-composable.com
  **/
-import { useRef as f, useEffect as s, useState as d, useMemo as p } from "react";
-function m({ name: e, payload: t }) {
-  const n = new CustomEvent(e, { detail: { payload: t } });
-  return { name: e, event: n, dispatch: () => document.dispatchEvent(n) };
+import { useRef as a, useEffect as c, useState as d, useMemo as v } from "react";
+/**
+ * React composable api
+ * (c) 2024 Leto (Mikhail)
+ * @license MIT
+ * @link https://react-composable.com
+ **/
+function m(n) {
+  const e = new CustomEvent(n.name, {
+    detail: {
+      payload: n.payload
+    }
+  }), t = () => document.dispatchEvent(e);
+  return {
+    name: n.name,
+    event: e,
+    dispatch: t
+  };
 }
-function i(e, t) {
-  const n = typeof e, c = {
-    set(r, o, u) {
-      return o === "value" ? (r[o] = u, t(r.value), !0) : !1;
+function w(n, e) {
+  const t = typeof n, s = {
+    set(r, u, o) {
+      return u === "value" ? (r[u] = o, e(r.value), !0) : !1;
     }
-  }, l = {
-    set(r, o, u) {
-      return r[o] = u, t(Array.isArray(r) ? [...r] : { ...r }), !0;
+  }, i = {
+    set(r, u, o) {
+      return r[u] = o, e(Array.isArray(r) ? [...r] : { ...r }), !0;
     },
-    deleteProperty(r, o) {
-      return delete r[o], t(Array.isArray(r) ? [...r] : { ...r }), !0;
+    deleteProperty(r, u) {
+      return delete r[u], e(Array.isArray(r) ? [...r] : { ...r }), !0;
     }
-  }, y = {
-    apply(r, o, u) {
-      return r.apply(o, u);
+  }, p = {
+    apply(r, u, o) {
+      return r.apply(u, o);
     }
   };
-  if (n === "string" || n === "boolean" || n === "symbol")
-    return new Proxy({ value: e }, c);
-  if (n === "number")
-    return new Proxy({ value: e }, {
-      ...c,
-      set(r, o, u) {
-        return o === "value" && typeof u == "number" ? (r[o] = u, t(r.value), !0) : (console.warn("New value must be a number"), !1);
+  if (t === "string" || t === "boolean" || t === "symbol") {
+    const r = { value: n };
+    return new Proxy(r, s);
+  } else if (t === "number") {
+    const r = { value: n };
+    return new Proxy(r, {
+      ...s,
+      set(u, o, f) {
+        return o === "value" ? typeof f == "number" ? (u[o] = f, e(u.value), !0) : (console.warn("New value must be a number"), !1) : !1;
       }
     });
-  if (Array.isArray(e) || n === "object" && e !== null)
-    return new Proxy(e, l);
-  if (n === "function")
-    return new Proxy(e, y);
-  throw new Error("Unsupported data type");
+  } else {
+    if (Array.isArray(n))
+      return new Proxy(n, i);
+    if (t === "object" && n !== null)
+      return new Proxy(n, i);
+    if (t === "function")
+      return new Proxy(n, p);
+    throw new Error("Unsupported data type");
+  }
 }
-function E(e) {
-  const [t, n] = d(e);
-  return p(() => i(t, n), [t]);
+function b(n) {
+  const [e, t] = d(n);
+  return v(() => w(e, t), [e]);
 }
-function w(e, t) {
-  Array.isArray(e) || (e = [e]);
-  const n = f(!1);
-  s(() => {
-    if (!n.current) {
-      n.current = !0;
-      return;
-    }
-    t();
-  }, e);
-}
-function b(e) {
-  const t = f(!1);
-  s(() => {
-    t.current || (e(), t.current = !0);
-  }, [e]);
-}
-function h(e) {
-  const t = f(!1), n = f(!1);
-  s(() => {
+function A(n, e) {
+  Array.isArray(n) || (n = [n]);
+  const t = a(!1);
+  c(() => {
     if (!t.current) {
       t.current = !0;
       return;
     }
-    n.current || (e(), n.current = !0);
-  }, [e]);
-}
-function A(e) {
-  s(() => {
     e();
+  }, n);
+}
+function E(n) {
+  const e = a(!1);
+  c(() => {
+    e.current || (n(), e.current = !0);
+  }, [n]);
+}
+function P(n) {
+  const e = a(!1), t = a(!1);
+  c(() => {
+    if (!e.current) {
+      e.current = !0;
+      return;
+    }
+    t.current || (n(), t.current = !0);
+  }, [n]);
+}
+function h(n) {
+  c(() => {
+    n();
   });
 }
-function M(e) {
-  const t = f(!1);
-  s(() => () => {
-    t.current ? e() : t.current = !0;
+function x(n) {
+  const e = a(!1);
+  c(() => () => {
+    e.current ? n() : e.current = !0;
   }, []);
 }
-function P(e, t) {
-  s(() => {
-    const n = (c) => t(c.detail.payload);
-    return document.addEventListener(e, n), () => {
-      document.removeEventListener(e, n);
-    };
-  }, []);
+function O(n, e) {
+  const t = (s) => e(s.detail.payload);
+  c(() => (document.addEventListener(n, t), () => {
+    document.removeEventListener(n, t);
+  }), []);
 }
-function v(e) {
-  return a(e), E(e);
+function M(n) {
+  return l(n), b(n);
 }
-function a(e) {
-  if (typeof e == "object" && e !== null)
-    for (const t in e)
-      e.hasOwnProperty(t) && (typeof e[t] == "object" && e[t] !== null ? a(e[t]) : e[t] = i(e[t]));
+function l(n) {
+  if (typeof n == "object" && n !== null)
+    for (let e in n)
+      n.hasOwnProperty(e) && (typeof n[e] == "object" && n[e] !== null ? l(n[e]) : n[e] = y(n[e]));
 }
-const x = v, U = w, j = b, H = h, R = A, S = M, B = P, O = {
-  ref: x,
+const y = M, U = A, R = E, j = P, B = h, I = x, L = O, C = {
+  ref: y,
   createEvent: m,
-  onEvent: B,
+  onEvent: L,
   watch: U,
-  onBeforeMount: j,
-  onMounted: H,
-  onUpdate: R,
-  onUnmount: S
+  onBeforeMount: R,
+  onMounted: j,
+  onUpdate: B,
+  onUnmount: I
 };
 export {
   m as createEvent,
-  O as default,
-  j as onBeforeMount,
-  B as onEvent,
-  H as onMounted,
-  S as onUnmount,
-  R as onUpdate,
-  x as ref,
+  C as default,
+  R as onBeforeMount,
+  L as onEvent,
+  j as onMounted,
+  I as onUnmount,
+  B as onUpdate,
+  y as ref,
   U as watch
 };
