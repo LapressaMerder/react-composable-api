@@ -1,11 +1,8 @@
 ## react composable api
-#### official page: [https://react-composable.com](https://react-composable.com]) 
-#### github page: [https://react-composable.com](https://react-composable.com]) 
 ___
-
 Lightweight library for creation composable functional components. 
 This lib provide a classic hooks and life cycle actions of composable pattern:
----
+___
 
 ```tsx
 import {ref, watch, onMounted} from 'react-composable-api'
@@ -23,5 +20,5 @@ function App() {
 
 export default App
 ```
----
+___
 work in progress for bested result!
