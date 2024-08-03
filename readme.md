@@ -1,5 +1,4 @@
 ## react composable api
-___
 Lightweight library for creation composable functional components. 
 This lib provide a classic hooks and life cycle actions of composable pattern:
 ___
