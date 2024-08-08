@@ -4,152 +4,134 @@
  * @license MIT
  * @link https://react-composable.com
  **/
-import { useRef as i, useEffect as a, useState as v, useMemo as m } from "react";
-/**
- * React composable api
- * (c) 2024 Leto (Mikhail)
- * @license MIT
- * @link https://react-composable.com
- **/
-function w(n) {
-  const e = new CustomEvent(n.name, {
+import { useRef as c, useEffect as s, useState as m, useMemo as w } from "react";
+function A(e) {
+  const n = new CustomEvent(e.name, {
     detail: {
-      payload: n.payload
+      payload: e.payload
     }
-  }), t = () => document.dispatchEvent(e);
+  }), t = () => document.dispatchEvent(n);
   return {
-    name: n.name,
-    event: e,
+    name: e.name,
+    event: n,
     dispatch: t
   };
 }
-function A(n, e) {
-  const t = typeof n, u = {
-    set(r, o, c) {
-      return o === "value" ? (r[o] = c, e(r.value), !0) : !1;
-    }
-  }, f = {
-    set(r, o, c) {
-      return r[o] = c, e(Array.isArray(r) ? [...r] : { ...r }), !0;
-    },
-    deleteProperty(r, o) {
-      return delete r[o], e(Array.isArray(r) ? [...r] : { ...r }), !0;
+function E(e, n) {
+  const t = typeof e, i = {
+    set(r, o, u) {
+      return o === "value" ? (r[o] = u, n(r.value), !0) : !1;
     }
   }, d = {
-    apply(r, o, c) {
-      return r.apply(o, c);
+    set(r, o, u) {
+      return r[o] = u, n(Array.isArray(r) ? [...r] : { ...r }), !0;
+    },
+    deleteProperty(r, o) {
+      return delete r[o], n(Array.isArray(r) ? [...r] : { ...r }), !0;
+    }
+  }, p = {
+    apply(r, o, u) {
+      return r.apply(o, u);
     }
   };
-  if (t === "string" || t === "boolean" || t === "symbol") {
-    const r = { value: n };
-    return new Proxy(r, u);
-  } else if (t === "number") {
-    const r = { value: n };
-    return new Proxy(r, {
-      ...u,
-      set(o, c, l) {
-        return c === "value" ? typeof l == "number" ? (o[c] = l, e(o.value), !0) : (console.warn("New value must be a number"), !1) : !1;
+  if (["string", "boolean", "symbol"].includes(t))
+    return new Proxy({ value: e }, i);
+  if (t === "number")
+    return new Proxy({ value: e }, {
+      ...i,
+      set(r, o, u) {
+        return o === "value" && typeof u == "number" ? (r[o] = u, n(r.value), !0) : (console.warn("New value must be a number"), !1);
       }
     });
-  } else {
-    if (Array.isArray(n))
-      return new Proxy(n, f);
-    if (t === "object" && n !== null)
-      return new Proxy(n, f);
-    if (t === "function")
-      return new Proxy(n, d);
-    throw new Error("Unsupported data type");
-  }
+  if (Array.isArray(e) || t === "object" && e !== null)
+    return new Proxy(e, d);
+  if (t === "function")
+    return new Proxy(e, p);
+  throw new Error("Unsupported data type");
 }
-function E(n) {
-  const [e, t] = v(n);
-  return m(() => A(e, t), [e]);
+function a(e) {
+  const [n, t] = m(e);
+  return w(() => E(n, t), [n]);
 }
-function O(n, e) {
-  Array.isArray(n) || (n = [n]);
-  const t = i(!1);
-  a(() => {
-    if (!t.current) {
-      t.current = !0;
-      return;
-    }
+function O(e, n) {
+  Array.isArray(e) || (e = [e]);
+  const t = c(!1);
+  s(() => {
+    t.current ? n() : t.current = !0;
+  }, e);
+}
+function M(e) {
+  const n = c(!1);
+  s(() => {
+    n.current || (e(), n.current = !0);
+  }, [e]);
+}
+function P(e) {
+  const n = c(!1), t = c(!1);
+  s(() => {
+    n.current && !t.current ? (e(), t.current = !0) : n.current = !0;
+  }, [e]);
+}
+function h(e) {
+  s(() => {
     e();
-  }, n);
-}
-function P(n) {
-  const e = i(!1);
-  a(() => {
-    e.current || (n(), e.current = !0);
-  }, [n]);
-}
-function h(n) {
-  const e = i(!1), t = i(!1);
-  a(() => {
-    if (!e.current) {
-      e.current = !0;
-      return;
-    }
-    t.current || (n(), t.current = !0);
-  }, [n]);
-}
-function x(n) {
-  a(() => {
-    n();
   });
 }
-function M(n) {
-  const e = i(!1);
-  a(() => () => {
-    e.current ? n() : e.current = !0;
+function x(e) {
+  const n = c(!1);
+  s(() => () => {
+    n.current ? e() : n.current = !0;
   }, []);
 }
-function U(n, e) {
-  const t = (u) => e(u.detail.payload);
-  a(() => (document.addEventListener(n, t), () => {
-    document.removeEventListener(n, t);
-  }), []);
+function R(e, n) {
+  const t = (i) => n(i.detail.payload);
+  s(() => (document.addEventListener(e, t), () => {
+    document.removeEventListener(e, t);
+  }), [e, n]);
 }
-function s(n) {
-  if (n === null || typeof n != "object")
-    return n;
-  if (Array.isArray(n)) {
-    const t = [];
-    for (let u = 0; u < n.length; u++)
-      t[u] = s(n[u]);
-    return t;
-  }
-  const e = {};
-  for (const t in n)
-    Object.prototype.hasOwnProperty.call(n, t) && (e[t] = s(n[t]));
-  return e;
+function f(e) {
+  if (e === null || typeof e != "object")
+    return e;
+  if (Array.isArray(e))
+    return e.map(f);
+  const n = {};
+  for (const t in e)
+    Object.prototype.hasOwnProperty.call(e, t) && (n[t] = f(e[t]));
+  return n;
 }
-function b(n) {
-  const e = s(n);
-  return y(e), E(e);
+function U(e) {
+  const n = f(e);
+  return a(n);
 }
-function y(n) {
-  if (typeof n == "object" && n !== null)
-    for (let e in n)
-      Object.prototype.hasOwnProperty.call(n, e) && (typeof n[e] == "object" && n[e] !== null ? y(n[e]) : n[e] = p(n[e]));
+function v(e) {
+  const n = f(e);
+  return l(n), a(n);
 }
-const p = b, R = O, g = P, B = h, C = x, I = M, L = U, N = {
-  ref: p,
-  createEvent: w,
-  onEvent: L,
-  watch: R,
-  onBeforeMount: g,
+function l(e) {
+  if (typeof e == "object" && e !== null)
+    for (let n in e)
+      Object.prototype.hasOwnProperty.call(e, n) && (typeof e[n] == "object" && e[n] !== null ? l(e[n]) : e[n] = y(e[n]));
+}
+const y = U, H = v, b = O, I = M, B = P, L = h, S = x, T = R, W = {
+  ref: y,
+  deepRef: H,
+  createEvent: A,
+  onEvent: T,
+  watch: b,
+  onBeforeMount: I,
   onMounted: B,
-  onUpdate: C,
-  onUnmount: I
+  onUpdate: L,
+  onUnmount: S
 };
 export {
-  w as createEvent,
-  N as default,
-  g as onBeforeMount,
-  L as onEvent,
+  A as createEvent,
+  H as deepRef,
+  W as default,
+  I as onBeforeMount,
+  T as onEvent,
   B as onMounted,
-  I as onUnmount,
-  C as onUpdate,
-  p as ref,
-  R as watch
+  S as onUnmount,
+  L as onUpdate,
+  y as ref,
+  b as watch
 };

@@ -12,10 +12,12 @@ declare export function onMounted(callback: () => void):void
 declare export function onUpdate(callback: () => void):void
 declare export function onUnmount(callback: () => void):void
 declare export function onEvent<T>(name: string, callback: (e:T) => void):void
-declare export function ref<T>(state:T): T extends object ? DeepRef<T> : Ref<T>;
+declare export function ref<T>(state:T): Ref<T>;
+declare export function deepRef<T>(state:T): T extends object ? DeepRef<T> : Ref<T>;
 
 export default {
     ref,
+    deepRef,
     createEvent,
     onEvent,
     watch,
