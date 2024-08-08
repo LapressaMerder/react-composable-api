@@ -1,4 +1,4 @@
-type DeepRef<T> = {
+export type DeepRef<T> = {
     [K in keyof T]:  T[K] extends object ? DeepRef<T[K]> : Ref<T[K]>;
 };
 // eslint-disable-next-line @typescript-eslint/ban-types
